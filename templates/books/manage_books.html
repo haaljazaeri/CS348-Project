@@ -1,0 +1,62 @@
+{% extends "../base.html" %}
+{% block title %}Manage Books{% endblock %}
+{% block head %}
+<style>
+.book-img {
+  width: 40px;
+  height: 40px;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <h1 class="p-3 h3 border-bottom border-secondary border-2">Books List</h1>
+  {% if messages %}
+    <div>
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message|safe }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+<table class="table table-hover" id="myTable">
+  <thead>
+    <tr>
+      <th scope="col">ISBN</th>
+      <th scope="col">Title</th>
+      <th scope="col">Author</th>
+      <th scope="col">Genre</th>
+      <th scope="col">Publication Year</th>
+      <th scope="col">Page Count</th>
+      <th scope="col">Edit/Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for b in books %}
+    <tr>
+      <th scope="row">{{ b.isbn }}</th>
+      <td>{{ b.title }}</td>
+      <td>{{ b.author }}</td>
+      <td>{{ b.genre }}</td>
+      <td>{{ b.publication_year }}</td>
+      <td>{{ b.page_count }}</td>
+      <td>
+        <a href="{% url 'edit_book' b.isbn %}" class="btn btn-outline-primary ml-3"><i class="fa-regular fa-pen-to-square"></i></a>
+        <a href="{% url 'delete_book' b.isbn %}" class="btn btn-outline-danger"><i class="fa-regular fa-trash-can"></i></a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.min.js"></script>
+<script>
+let table = new DataTable('#myTable');
+</script>
+{% endblock %}

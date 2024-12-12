@@ -1,0 +1,55 @@
+{% extends "../base.html" %}
+{% block title %} Add Genre {% endblock %}
+
+
+{% block head %}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="form-container mt-5">
+
+  {% comment %} FORM START {% endcomment %}
+  <form class="w-25 m-auto" method="POST" action="{% url 'add_genre' %}">
+
+    {% csrf_token %}
+
+    {% comment %} FORM HEADER START {% endcomment %}
+    <div class="d-flex justify-content-center mb-3">
+      <h1 class="h3 fw-normal text-primary">Add Genre</h1>
+    </div>
+    {% comment %} FORM HEADER END {% endcomment %}
+
+    
+    {% comment %} ERROR MESSAGE START {% endcomment %}
+    {% if messages %}
+    <div>
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message|safe }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% comment %} ERROR MESSAGE END {% endcomment %}
+
+    {% comment %} NAME FIELD START {% endcomment %}
+    <div class="form-floating mb-2">
+      <input type="text" class="form-control" name="name" id="name" placeholder="Genre name">
+      <label for="name">Genre Name</label>
+    </div>
+    {% comment %} NAME FIELD END {% endcomment %}
+
+    {% comment %} SUBMIT BUTTON START {% endcomment %}
+    <div class="text-center">
+      <button class="btn btn-primary px-5 py-2" type="submit">Create Genre</button>
+    </div>
+    {% comment %} SUBMIT BUTTON END {% endcomment %}
+
+  </form>
+  {% comment %} FORM END {% endcomment %}
+
+</div>
+
+{% endblock %}

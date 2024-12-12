@@ -1,0 +1,73 @@
+{% extends "../base.html" %}
+{% block title %} Edit Author {% endblock %}
+
+
+{% block head %}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="form-container mt-5">
+
+  {% comment %} FORM START {% endcomment %}
+  <form class="w-25 m-auto" method="POST" action="{% url 'edit_author' author.id %}">
+
+    {% csrf_token %}
+
+    {% comment %} FORM HEADER START {% endcomment %}
+    <div class="d-flex justify-content-center mb-3">
+      <h1 class="h3 fw-normal text-primary">Edit Author</h1>
+    </div>
+    {% comment %} FORM HEADER END {% endcomment %}
+
+    
+    {% comment %} ERROR MESSAGE START {% endcomment %}
+    {% if messages %}
+    <div>
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message|safe }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% comment %} ERROR MESSAGE END {% endcomment %}
+
+    {% comment %} FIRSTNAME FIELD START {% endcomment %}
+    <div class="form-floating mb-2">
+      <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name" value="{{ author.first_name }}">
+      <label for="first_name">First Name</label>
+    </div>
+    {% comment %} FIRSTNAME FIELD END {% endcomment %}
+
+      {% comment %} LASTNAME FIELD START {% endcomment %}
+    <div class="form-floating mb-2">
+      <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name" value="{{ author.last_name }}">
+      <label for="last_name">Last Name</label>
+    </div>
+    {% comment %} LASTNAME FIELD END {% endcomment %}
+
+    {% comment %} NATIONALITY FIELD START {% endcomment %}
+    <div class="mb-2">
+      <select name="nationality" class="form-select p-3" aria-label="Default select example">
+        <option value="-1" selected>Select Nationality</option>
+        {% for n in nationalities %}
+        <option value="{{ n.id }}" {% if author.nationality == n %}selected{% endif %}>{{ n.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% comment %} NATIONALITY FIELD END {% endcomment %}
+
+    {% comment %} SUBMIT BUTTON START {% endcomment %}
+    <div class="text-center">
+      <button class="btn btn-primary px-5 py-2" type="submit">Update Author</button>
+    </div>
+    {% comment %} SUBMIT BUTTON END {% endcomment %}
+
+  </form>
+  {% comment %} FORM END {% endcomment %}
+
+</div>
+
+{% endblock %}

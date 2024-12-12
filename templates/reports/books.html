@@ -1,0 +1,208 @@
+{% extends "../base.html" %}
+{% block title %} Reports {% endblock %}
+
+
+{% block head %}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="col-4">
+      {% comment %} CHART START {% endcomment %}
+      <div class="row">
+        <div class="d-flex justify-content-center pb-4 pt-4">
+          <h1 class="h3 fw-normal text-primary">Distribution of Books by Origin</h1>
+        </div>
+        {% if chart_labels %}
+        <canvas id="myChart" class="pb-4 border-bottom border-3"></canvas>
+        {% else %}
+        <h3 class="text-center text-secondary pb-4 border-bottom border-3">No data</h3>
+        {% endif %}
+      </div>
+      {% comment %} CHART END {% endcomment %}
+      
+      {% comment %} STATS START {% endcomment %}
+      <div class="row">
+        <div class="d-flex justify-content-center pb-4 pt-4">
+          <h1 class="h3 fw-normal text-primary">Statistics</h1>
+        </div>
+        <div class="row">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Stat</th>
+                <th scope="col">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for key, value in stats.items %}
+              <tr>
+                <th scope="row">{{ key }}:</td>
+                <td>{{ value|floatformat:"0" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% comment %} STATS END {% endcomment %}
+      
+    </div>
+    <div class="col-7 p-4">
+      {% comment %} FORM START {% endcomment %}
+      <div class="row">
+        <form class="" method="POST" action="{% url 'reports_books' %}">
+          
+          {% csrf_token %}
+
+          {% comment %} FORM HEADER START {% endcomment %}
+          <div class="d-flex justify-content-center mb-3">
+            <h1 class="h3 fw-normal text-primary">Filter Books</h1>
+          </div>
+          {% comment %} FORM HEADER END {% endcomment %}
+
+          {% comment %} ERROR MESSAGE START {% endcomment %}
+          {% if messages %}
+          <div>
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+              {{ message|safe }}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+          {% comment %} ERROR MESSAGE END {% endcomment %}
+          
+          <div class="row">
+            {% comment %} GENRE FIELD START {% endcomment %}
+            <div class="col-4">
+              <div class="mb-2">
+                <select name="genre" class="form-select p-3" aria-label="Default select example">
+                  <option value="-1" selected>Select Genre</option>
+                  {% for g in genres %}
+                  <option value="{{ g.id }}" {% if genre|add:"0" == g.id %}selected{% endif %}>{{ g.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            {% comment %} GENRE FIELD END {% endcomment %}
+            
+            {% comment %} PUBLICATION_YEAR_FROM FIELD START {% endcomment %}
+            <div class="col-3"> 
+              <div class="form-floating mb-2">
+                <input type="number" min="1200" max="2025" class="form-control" name="from_year" id="from_year" placeholder="Publication Year From" value="{{ from_year }}">
+                <label for="from_year">Pub. Year From</label>
+              </div>
+            </div>
+            {% comment %} PUBLICATION_YEAR_FROM FIELD END {% endcomment %}
+            
+            {% comment %} PUBLICATION_YEAR_UNTIL FIELD START {% endcomment %}
+            <div class="col-3">
+              <div class="form-floating mb-2">
+                <input type="number" min="1200" max="2025" class="form-control" name="until_year" id="until_year" placeholder="Publication Year Until" value="{{ until_year }}">
+                <label for="until_year">Pub. Year Until</label>
+              </div>
+            </div>
+            {% comment %} PUBLICATION_YEAR_UNTIL FIELD END {% endcomment %}
+          </div>
+
+          {% comment %} SUBMIT BUTTON START {% endcomment %}
+          <div class="">
+            <button class="btn btn-primary px-5 py-2" type="submit">Filter Books</button>
+          </div>
+          {% comment %} SUBMIT BUTTON END {% endcomment %}
+
+        </form>
+      </div>
+      {% comment %} FORM END {% endcomment %}
+
+      {% comment %} TABLE START {% endcomment %}
+      <div class="row mt-4 pt-4 border-top border-2">
+        <table class="table table-hover" id="myTable">
+        <thead>
+          <tr>
+            <th scope="col">ISBN</th>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+            <th scope="col">Genre</th>
+            <th scope="col">Pub. Year</th>
+            <th scope="col">Page Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in books %}
+          <tr>
+            <th scope="row">{{ b.isbn }}</th>
+            <td>{{ b.title }}</td>
+            <td>{{ b.author_fname }} {{ b.author_lname }} ({{ b.author_nationality }})</td>
+            <td>{{ b.genre }}</td>
+            <td>{{ b.publication_year }}</td>
+            <td>{{ b.page_count }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+      {% comment %} TABLE END {% endcomment %}
+    </div>
+    
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+let table = new DataTable('#myTable');
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+  
+const chartLabels = {{ chart_labels|safe }};
+const chartData = {{ chart_data|safe }};
+const backgroundColors = Array.from({ length: chartLabels.length }, getRandomColor);
+
+const ctx = document.getElementById('myChart').getContext('2d');
+const doughnutChart = new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: chartLabels,
+    datasets: [{
+      label: 'Book Count by Origin',
+      data: chartData,
+      backgroundColor: backgroundColors,
+      borderColor: '#ffffff',
+      borderWidth: 1,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      tooltip: {
+        callbacks: {
+          label: function(tooltipItem) {
+            return `${tooltipItem.label}: ${tooltipItem.raw} books`;
+          }
+        }
+      }
+    }
+  }
+});
+</script>
+
+{% endblock %}

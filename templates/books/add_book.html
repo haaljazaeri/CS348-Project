@@ -1,0 +1,98 @@
+{% extends "../base.html" %}
+{% block title %} Add Book {% endblock %}
+
+
+{% block head %}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="form-container mt-5">
+
+  {% comment %} FORM START {% endcomment %}
+  <form class="w-25 m-auto" method="POST" action="{% url 'add_book' %}">
+
+    {% csrf_token %}
+
+    {% comment %} FORM HEADER START {% endcomment %}
+    <div class="d-flex justify-content-center mb-3">
+      <h1 class="h3 fw-normal text-primary">Add Book</h1>
+    </div>
+    {% comment %} FORM HEADER END {% endcomment %}
+
+    
+    {% comment %} ERROR MESSAGE START {% endcomment %}
+    {% if messages %}
+    <div>
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message|safe }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% comment %} ERROR MESSAGE END {% endcomment %}
+
+    {% comment %} ISBN FIELD START {% endcomment %}
+    <div class="form-floating mb-2">
+      <input type="text" class="form-control" name="isbn" id="isbn" placeholder="ISBN">
+      <label for="isbn">ISBN</label>
+    </div>
+    {% comment %} ISBN FIELD END {% endcomment %}
+
+    {% comment %} TITLE FIELD START {% endcomment %}
+    <div class="form-floating mb-2">
+      <input type="text" class="form-control" name="title" id="title" placeholder="Title">
+      <label for="title">Title</label>
+    </div>
+    {% comment %} TITLE FIELD END {% endcomment %}
+    
+    {% comment %} AUTHOR FIELD START {% endcomment %}
+    <div class="mb-2">
+      <select name="author" class="form-select p-3" aria-label="Default select example">
+        <option value="-1" selected>Select Author</option>
+        {% for a in authors %}
+        <option value="{{ a.id }}">{{ a.first_name }} {{ a.last_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% comment %} AUTHOR FIELD END {% endcomment %}
+
+    {% comment %} GENRE FIELD START {% endcomment %}
+    <div class="mb-2">
+      <select name="genre" class="form-select p-3" aria-label="Default select example">
+        <option value="-1" selected>Select Genre</option>
+        {% for g in genres %}
+        <option value="{{ g.id }}">{{ g.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% comment %} GENRE FIELD END {% endcomment %}
+
+    {% comment %} PUBLICATION_YEAR FIELD START {% endcomment %}
+    <div class="form-floating mb-2">
+      <input type="number" min="1200" max="2025" class="form-control" name="publication_year" id="publication_year" placeholder="Publication Year">
+      <label for="publication_year">Publication Year</label>
+    </div>
+    {% comment %} PUBLICATION_YEAR FIELD END {% endcomment %}
+
+    {% comment %} PAGE_COUNT FIELD START {% endcomment %}
+    <div class="form-floating mb-2">
+      <input type="number" min="1" class="form-control" name="page_count" id="page_count" placeholder="Page Count">
+      <label for="page_count">Page Count</label>
+    </div>
+    {% comment %} PAGE_COUNT FIELD END {% endcomment %}
+
+    {% comment %} SUBMIT BUTTON START {% endcomment %}
+    <div class="text-center">
+      <button class="btn btn-primary px-5 py-2" type="submit">Create Book</button>
+    </div>
+    {% comment %} SUBMIT BUTTON END {% endcomment %}
+
+  </form>
+  {% comment %} FORM END {% endcomment %}
+
+</div>
+
+{% endblock %}
